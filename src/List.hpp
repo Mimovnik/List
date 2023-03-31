@@ -29,6 +29,16 @@ class List {
    public:
     List();
 
+    List(const List& other);
+
+    List<T>& operator=(const List<T>& other);
+
+    List(List&& other);
+
+    List<T>& operator=(List<T>&& other);
+
+    ~List();
+
     void append(T newdata);
 
     void push(T newdata);
@@ -50,8 +60,6 @@ class List {
     void printAt(int index);
 
     void destroy();
-
-    List<T>& operator=(List<T>& right);
 };
 
 template <typename T>
@@ -61,13 +69,52 @@ List<T>::List() {
 }
 
 template <typename T>
-List<T>& List<T>::operator=(List<T>& right) {
-    if (this == &right) {
+List<T>::List(const List<T>& other) {
+    head = nullptr;
+    tail = nullptr;
+    Node<T>* tmp = other.head;
+    while (tmp != nullptr) {
+        append(tmp->data);
+        tmp = tmp->next;
+    }
+}
+
+template <typename T>
+List<T>& List<T>::operator=(const List<T>& other) {
+    if (this == &other) {
         return *this;
     }
-    this->head = right.head;
-    this->tail = right.tail;
+    destroy();
+    head = nullptr;
+    tail = nullptr;
+    Node<T>* tmp = other.head;
+    while (tmp != nullptr) {
+        append(tmp->data);
+        tmp = tmp->next;
+    }
+
     return *this;
+}
+
+template <typename T>
+List<T>::List(List&& other) {
+    std::swap(head, other.head);
+    std::swap(tail, other.tail);
+}
+
+template <typename T>
+List<T>& List<T>::operator=(List<T>&& other) {
+    if (this == &other) {
+        return *this;
+    }
+    std::swap(head, other.head);
+    std::swap(tail, other.tail);
+    return *this;
+}
+
+template <typename T>
+List<T>::~List() {
+    destroy();
 }
 
 template <typename T>
@@ -193,10 +240,15 @@ void List<T>::printAt(int index) {
 template <typename T>
 void List<T>::destroy() {
     Node<T>* tmp = head;
+    if (tmp == nullptr) {
+        return;
+    }
     while (tmp->next != nullptr) {
         tmp = tmp->next;
         delete tmp->prev;
     }
 
     delete tail;
+    head = nullptr;
+    tail = nullptr;
 }
