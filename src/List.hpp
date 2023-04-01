@@ -69,11 +69,16 @@ class List {
 
     int getSize() const;
 
+    T getAt(int index);
+
     void destroy();
 };
 
 template <typename T>
 List<T>::Node<T>* List<T>::getByIndex(int index) {
+    if (index < 0 || index >= getSize()) {
+        return nullptr;
+    }
     Node<T>* current = head;
     for (int i = 0; i < index; i++) {
         current = current->next;
@@ -283,6 +288,14 @@ int List<T>::getSize() const {
         tmp = tmp->next;
     }
     return size;
+}
+
+template <typename T>
+T List<T>::getAt(int index) {
+    if (index < 0 || index >= getSize()) {
+        throw "Trying to get element out of bound.";
+    }
+    return getByIndex(index)->data;
 }
 
 template <typename T>
