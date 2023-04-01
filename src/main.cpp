@@ -2,19 +2,34 @@
 
 #include "List.hpp"
 
-int main() {
-    List<int> l1 = List<int>();
-    l1.append(1);
-    l1.append(2);
-    l1.append(3);
-    std::cout << "l1" << std::endl;
-    l1.print();
+class Klasa {
+   private:
+    int* ind = nullptr;
 
-    List<int> l2 = std::move(l1);
-    std::cout << "l1" << std::endl;
-    l1.print();
-    std::cout << "l2" << std::endl;
-    l2.print();
+   public:
+    Klasa();
+    Klasa(int ind);
+    Klasa(const Klasa& other) { ind = other.ind; }
+    Klasa& operator=(const Klasa& other) {
+        ind = new int(*other.ind);
+        return *this;
+    }
+    Klasa(Klasa&& other) { ind = other.ind; }
+    Klasa& operator=(Klasa&& other) {
+        int* tmp = ind;
+        ind = other.ind;
+        other.ind = ind;
+        return *this;
+    }
+};
+Klasa::Klasa() { this->ind = new int(-1); }
+Klasa::Klasa(int ind) { this->ind = new int(ind); }
+
+int main() {
+    List<Klasa> l;
+    Klasa k = Klasa(2);
+    l.append(Klasa(1));
+    l.append(k);
 
     return 0;
 }
