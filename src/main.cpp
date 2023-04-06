@@ -30,6 +30,8 @@ int main() {
     Klasa k = Klasa(2);
     l.append(Klasa(1));
     l.append(k);
-    Klasa k2 = l.getAt(1);
+
+    Klasa& k2 = l.getAt(1);
+
     return 0;
 }
